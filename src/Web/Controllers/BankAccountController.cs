@@ -19,36 +19,39 @@ public class BankAccountController : ControllerBase
     {
         _bankAccountRepository = bankAccountRepository;
     }
-
-    [HttpPost("create")]
-    public ActionResult<BankAccount> CreateBankAccount([FromQuery] string name, [FromQuery] decimal initialBalance, [FromQuery] AccountType accountType, [FromQuery] decimal? creditLimit = null, [FromQuery] decimal? monthlyDeposit = null)
+[HttpPost("create")]
+    public ActionResult<BankAccountDto> CreateBankAccount([FromBody] CreateBankAccountDto dto)
     {
-        if (string.IsNullOrWhiteSpace(name))
+        if (string.IsNullOrWhiteSpace(dto.Owner))
             throw new AppValidationException("Owner name is required.");
 
         BankAccount newAccount;
-        
-        switch (accountType)
+
+        switch (dto.AccountType)
         {
             case AccountType.Credit:
-                if (creditLimit == null)
+                if (dto.CreditLimit == null)
                     return BadRequest("Credit limit is required for a Line of Credit account.");
-                newAccount = new LineOfCreditAccount(name, initialBalance, creditLimit.Value);
+                newAccount = new LineOfCreditAccount(dto.Owner, dto.Balance, dto.CreditLimit.Value);
                 break;
+
             case AccountType.Gift:
-                newAccount = new GiftCardAccount(name, initialBalance, monthlyDeposit ?? 0);
+                newAccount = new GiftCardAccount(dto.Owner, dto.Balance, dto.MonthlyDeposit ?? 0);
                 break;
+
             case AccountType.Interest:
-                newAccount = new InterestEarningAccount(name, initialBalance);
+                newAccount = new InterestEarningAccount(dto.Owner, dto.Balance);
                 break;
+
             default:
                 return BadRequest("Invalid account type.");
         }
 
         _bankAccountRepository.Add(newAccount);
-        return CreatedAtAction(nameof(GetAccountInfo), new { accountNumber = newAccount.Number }, newAccount);
-    }
 
+        var dtoResult = BankAccountDto.Create(newAccount);
+        return CreatedAtAction(nameof(GetAccountInfo), new { accountNumber = newAccount.Number }, dtoResult);
+    }
     [HttpPost("monthEnd")]
     public ActionResult<string> PerformMonthEndForAccount([FromQuery] string accountNumber)
     {
