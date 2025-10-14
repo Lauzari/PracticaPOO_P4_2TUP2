@@ -16,7 +16,7 @@ public class Transaction
 
     }
 
-    public Transaction(decimal amount, DateTime date, string notes)
+    public Transaction(decimal amount, DateTime date, string? notes)
     {
         Amount = amount;
         Date = date;

@@ -85,8 +85,8 @@ public class BankAccountController : ControllerBase
     }
  
 
-    [HttpGet("accountInfo")]
-    public ActionResult<BankAccountDto> GetAccountInfo([FromQuery] string accountNumber)
+    [HttpGet("accountInfo/{accountNumber}")]
+    public ActionResult<BankAccountDto> GetAccountInfo([FromRoute] string accountNumber)
     {
         var account = _bankAccountService.GetAccountInfo(accountNumber);
 
