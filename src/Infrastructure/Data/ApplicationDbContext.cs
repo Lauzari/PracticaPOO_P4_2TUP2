@@ -14,12 +14,16 @@ namespace Infrastructure.Data
         public DbSet<GiftCardAccount> giftCardAccounts { get; set; }
         public DbSet<InterestEarningAccount> interestEarningAccounts { get; set; }
 
-        public DbSet<Transaction> transactions {get; set;}
+        public DbSet<Transaction> transactions { get; set; }
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
         }
-    }    
+
+
+        
+    }   
+     
 }

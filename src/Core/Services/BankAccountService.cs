@@ -98,7 +98,8 @@ public List<TransactionDto> GetAccountHistory(string accountNumber)
         .ToList();
 
     // Mapear a DTO
-    return TransactionDto.Create(transactions);
+    return TransactionDto.Create(account.Transactions
+        .OrderByDescending(t => t.Date));
 }
     public void PerformMonthEndForAccount(string accountNumber)
     {
