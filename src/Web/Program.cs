@@ -8,6 +8,7 @@ using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 using Web.Middleware;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -19,6 +20,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IBankAccountRepository, BankAccountRepository>();
 builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
 builder.Services.AddScoped<BankAccountService>();
+builder.Services.AddScoped<UserServices>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 /* Configuración de conexión con SQLite */
 var connection = new SqliteConnection("Data Source=WebApiBankAccount.db");
